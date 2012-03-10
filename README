@@ -1,0 +1,15 @@
+OpenGL image support for Go
+
+This package provides support for image formats typically associated
+with OpenGL and/or hardware accelerated graphics in general, via the
+image.Image interface.
+
+Currently, this package supports:
+
+ - DXT1,DXT3,DXT5 images (*)
+
+(*) indicates untested
+
+
+This package is provided under a Clear BSD License.
+
