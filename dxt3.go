@@ -22,7 +22,7 @@ type Dxt3 struct {
 func NewDxt3(r image.Rectangle) *Dxt3 {
 	w, h := r.Dx(), r.Dy()
 	pix := make([]uint8, ((w+3)/4)*((h+3)/4)*16)
-	return &Dxt3{pix, w + 3/4*16, r}
+	return &Dxt3{pix, (w+3)/4*16, r}
 }
 
 func (p *Dxt3) ColorModel() color.Model {
