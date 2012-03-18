@@ -238,7 +238,7 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 			d.img = make([]image.Image, d.h.MipMapCount)
 			w, h := int(d.h.Width), int(d.h.Height)
 			for i := 0; i < int(d.h.MipMapCount); i++ {
-				fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
+				//fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
 				img := glimage.NewDxt1(image.Rect(0, 0, w, h))
 				_, err = io.ReadFull(d.r, img.Pix)
 				if err != nil {
@@ -252,7 +252,7 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 			d.img = make([]image.Image, d.h.MipMapCount)
 			w, h := int(d.h.Width), int(d.h.Height)
 			for i := 0; i < int(d.h.MipMapCount); i++ {
-				fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
+				//fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
 				img := glimage.NewDxt3(image.Rect(0, 0, w, h))
 				_, err = io.ReadFull(d.r, img.Pix)
 				if err != nil {
@@ -266,7 +266,7 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 			d.img = make([]image.Image, d.h.MipMapCount)
 			w, h := int(d.h.Width), int(d.h.Height)
 			for i := 0; i < int(d.h.MipMapCount); i++ {
-				fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
+				//fmt.Printf("mipmap %v is %vx%v\n", i, w, h)
 				img := glimage.NewDxt5(image.Rect(0, 0, w, h))
 				_, err = io.ReadFull(d.r, img.Pix)
 				if err != nil {
