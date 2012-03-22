@@ -56,7 +56,7 @@ const (
 	fourccDX10 = 0x30315844
 )
 
-type dds_header struct {
+type sDDS_HEADER struct {
 	Size              uint32
 	Flags             uint32
 	Height            uint32
@@ -64,16 +64,16 @@ type dds_header struct {
 	PitchOrLinearSize uint32
 	Depth             uint32
 	MipMapCount       uint32
-	//Reserved1	uint32[11]
-	Ddspf dds_pixelformat
-	Caps  uint32
-	Caps2 uint32
-	//Caps3		uint32
-	//Caps4		uint32
-	//Reserved2	uint32
+	Reserved1	[11]uint32
+	Ddspf       sDDS_PIXELFORMAT
+	Caps        uint32
+	Caps2       uint32
+	Caps3		uint32
+	Caps4		uint32
+	Reserved2	uint32
 }
 
-func (d dds_header) String() string {
+func (d sDDS_HEADER) String() string {
 	// flags
 	var f []string
 	if d.Flags&cDDSD_CAPS != 0 {
@@ -146,7 +146,7 @@ func (d dds_header) String() string {
 		d.Caps2, strings.Join(c2, "|"))
 }
 
-type dds_pixelformat struct {
+type sDDS_PIXELFORMAT struct {
 	Size                                   uint32
 	Flags                                  uint32
 	FourCC                                 uint32
@@ -154,7 +154,7 @@ type dds_pixelformat struct {
 	RBitMask, GBitMask, BBitMask, ABitMask uint32
 }
 
-func (d dds_pixelformat) String() string {
+func (d sDDS_PIXELFORMAT)  String() string {
 	var s []string
 	if d.Flags&cDDPF_ALPHAPIXELS != 0 {
 		s = append(s, "DDPF_ALPHAPIXELS")
@@ -182,7 +182,7 @@ func (d dds_pixelformat) String() string {
 // main decoder struct
 type decoder struct {
 	r   io.Reader
-	h   dds_header
+	h   sDDS_HEADER
 	tmp [128]byte
 	img []image.Image
 }
@@ -288,30 +288,14 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 
 func (d *decoder) decodeHeader() error {
 	// read in header
-	_, err := io.ReadFull(d.r, d.tmp[:124])
+	err := binary.Read(d.r, binary.LittleEndian, &d.h)
 	if err != nil {
 		return err
 	}
 
-	d.h.Size = uint32(binary.LittleEndian.Uint32(d.tmp[0:4]))
 	if d.h.Size != 124 {
-		return fmt.Errorf("dds: invalid header length")
+		return fmt.Errorf("dds: invalid DDS header")
 	}
-	d.h.Flags = uint32(binary.LittleEndian.Uint32(d.tmp[4:8]))
-	d.h.Height = uint32(binary.LittleEndian.Uint32(d.tmp[8:12]))
-	d.h.Width = uint32(binary.LittleEndian.Uint32(d.tmp[12:16]))
-	d.h.PitchOrLinearSize = uint32(binary.LittleEndian.Uint32(d.tmp[16:20]))
-	d.h.Depth = uint32(binary.LittleEndian.Uint32(d.tmp[20:24]))
-	d.h.MipMapCount = uint32(binary.LittleEndian.Uint32(d.tmp[24:28]))
-	d.h.Ddspf.Flags = uint32(binary.LittleEndian.Uint32(d.tmp[76:80]))
-	d.h.Ddspf.FourCC = uint32(binary.LittleEndian.Uint32(d.tmp[80:84]))
-	d.h.Ddspf.RGBBitCount = uint32(binary.LittleEndian.Uint32(d.tmp[84:88]))
-	d.h.Ddspf.RBitMask = uint32(binary.LittleEndian.Uint32(d.tmp[88:92]))
-	d.h.Ddspf.GBitMask = uint32(binary.LittleEndian.Uint32(d.tmp[92:96]))
-	d.h.Ddspf.BBitMask = uint32(binary.LittleEndian.Uint32(d.tmp[96:100]))
-	d.h.Ddspf.ABitMask = uint32(binary.LittleEndian.Uint32(d.tmp[100:104]))
-	d.h.Caps = uint32(binary.LittleEndian.Uint32(d.tmp[104:108]))
-	d.h.Caps2 = uint32(binary.LittleEndian.Uint32(d.tmp[108:112]))
 
 	if d.h.Ddspf.FourCC == fourccDX10 {
 		return fmt.Errorf("dds: unsupported DX10 header")
