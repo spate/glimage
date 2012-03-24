@@ -1,0 +1,330 @@
+// Copyright (c) 2012, James Helferty
+// All rights reserved.
+
+package types
+
+import "fmt"
+import "strings"
+
+// Flags used by the Surface member of DDS_HEADER
+const (
+	DDSD_CAPS        = 0x1
+	DDSD_HEIGHT      = 0x2
+	DDSD_WIDTH       = 0x4
+	DDSD_PITCH       = 0x8
+	DDSD_PIXELFORMAT = 0x1000
+	DDSD_MIPMAPCOUNT = 0x20000
+	DDSD_LINEARSIZE  = 0x80000
+	DDSD_DEPTH       = 0x800000
+)
+
+// Pixel format flags used by the Flags parameter of DDS_PIXELFORMAT
+const (
+	DDPF_ALPHAPIXELS = 0x1
+	DDPF_ALPHA       = 0x2
+	DDPF_FOURCC      = 0x4
+	DDPF_RGB         = 0x40
+	DDPF_YUV         = 0x200
+	DDPF_LUMINANCE   = 0x20000
+)
+
+// Surface complexity caps, used by the Caps member of DDS_HEADER
+const (
+	DDSCAPS_COMPLEX = 0x8
+	DDSCAPS_MIPMAP  = 0x400000
+	DDSCAPS_TEXTURE = 0x1000
+)
+
+// Additional detail caps, used by the Caps2 member of DDS_HEADER
+const (
+	DDSCAPS2_CUBEMAP           = 0x200
+	DDSCAPS2_CUBEMAP_POSITIVEX = 0x400
+	DDSCAPS2_CUBEMAP_NEGATIVEX = 0x800
+	DDSCAPS2_CUBEMAP_POSITIVEY = 0x1000
+	DDSCAPS2_CUBEMAP_NEGATIVEY = 0x2000
+	DDSCAPS2_CUBEMAP_POSITIVEZ = 0x4000
+	DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x8000
+	DDSCAPS2_VOLUME            = 0x200000
+)
+
+// FOURCCs for texture formats
+const (
+	FOURCC_DXT1 = 0x31545844
+	FOURCC_DXT3 = 0x33545844
+	FOURCC_DXT5 = 0x35545844
+)
+
+// Signals the presence of a DDS_HEADER_DX10
+const (
+	FOURCC_DX10 = 0x30315844
+)
+
+// DXGI_FORMAT is one of a set of texture formats introduced in DirectX 10
+type DXGI_FORMAT uint32
+
+const (
+	DXGI_FORMAT_UNKNOWN DXGI_FORMAT = iota
+	DXGI_FORMAT_R32G32B32A32_TYPELESS
+	DXGI_FORMAT_R32G32B32A32_FLOAT
+	DXGI_FORMAT_R32G32B32A32_UINT
+	DXGI_FORMAT_R32G32B32A32_SINT
+	DXGI_FORMAT_R32G32B32_TYPELESS
+	DXGI_FORMAT_R32G32B32_FLOAT
+	DXGI_FORMAT_R32G32B32_UINT
+	DXGI_FORMAT_R32G32B32_SINT
+	DXGI_FORMAT_R16G16B16A16_TYPELESS
+	DXGI_FORMAT_R16G16B16A16_FLOAT
+	DXGI_FORMAT_R16G16B16A16_UNORM
+	DXGI_FORMAT_R16G16B16A16_UINT
+	DXGI_FORMAT_R16G16B16A16_SNORM
+	DXGI_FORMAT_R16G16B16A16_SINT
+	DXGI_FORMAT_R32G32_TYPELESS
+	DXGI_FORMAT_R32G32_FLOAT
+	DXGI_FORMAT_R32G32_UINT
+	DXGI_FORMAT_R32G32_SINT
+	DXGI_FORMAT_R32G8X24_TYPELESS
+	DXGI_FORMAT_D32_FLOAT_S8X24_UINT
+	DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS
+	DXGI_FORMAT_X32_TYPELESS_G8X24_UINT
+	DXGI_FORMAT_R10G10B10A2_TYPELESS
+	DXGI_FORMAT_R10G10B10A2_UNORM
+	DXGI_FORMAT_R10G10B10A2_UINT
+	DXGI_FORMAT_R11G11B10_FLOAT
+	DXGI_FORMAT_R8G8B8A8_TYPELESS
+	DXGI_FORMAT_R8G8B8A8_UNORM
+	DXGI_FORMAT_R8G8B8A8_UNORM_SRGB
+	DXGI_FORMAT_R8G8B8A8_UINT
+	DXGI_FORMAT_R8G8B8A8_SNORM
+	DXGI_FORMAT_R8G8B8A8_SINT
+	DXGI_FORMAT_R16G16_TYPELESS
+	DXGI_FORMAT_R16G16_FLOAT
+	DXGI_FORMAT_R16G16_UNORM
+	DXGI_FORMAT_R16G16_UINT
+	DXGI_FORMAT_R16G16_SNORM
+	DXGI_FORMAT_R16G16_SINT
+	DXGI_FORMAT_R32_TYPELESS
+	DXGI_FORMAT_D32_FLOAT
+	DXGI_FORMAT_R32_FLOAT
+	DXGI_FORMAT_R32_UINT
+	DXGI_FORMAT_R32_SINT
+	DXGI_FORMAT_R24G8_TYPELESS
+	DXGI_FORMAT_D24_UNORM_S8_UINT
+	DXGI_FORMAT_R24_UNORM_X8_TYPELESS
+	DXGI_FORMAT_X24_TYPELESS_G8_UINT
+	DXGI_FORMAT_R8G8_TYPELESS
+	DXGI_FORMAT_R8G8_UNORM
+	DXGI_FORMAT_R8G8_UINT
+	DXGI_FORMAT_R8G8_SNORM
+	DXGI_FORMAT_R8G8_SINT
+	DXGI_FORMAT_R16_TYPELESS
+	DXGI_FORMAT_R16_FLOAT
+	DXGI_FORMAT_D16_UNORM
+	DXGI_FORMAT_R16_UNORM
+	DXGI_FORMAT_R16_UINT
+	DXGI_FORMAT_R16_SNORM
+	DXGI_FORMAT_R16_SINT
+	DXGI_FORMAT_R8_TYPELESS
+	DXGI_FORMAT_R8_UNORM
+	DXGI_FORMAT_R8_UINT
+	DXGI_FORMAT_R8_SNORM
+	DXGI_FORMAT_R8_SINT
+	DXGI_FORMAT_A8_UNORM
+	DXGI_FORMAT_R1_UNORM
+	DXGI_FORMAT_R9G9B9E5_SHAREDEXP
+	DXGI_FORMAT_R8G8_B8G8_UNORM
+	DXGI_FORMAT_G8R8_G8B8_UNORM
+	DXGI_FORMAT_BC1_TYPELESS
+	DXGI_FORMAT_BC1_UNORM
+	DXGI_FORMAT_BC1_UNORM_SRGB
+	DXGI_FORMAT_BC2_TYPELESS
+	DXGI_FORMAT_BC2_UNORM
+	DXGI_FORMAT_BC2_UNORM_SRGB
+	DXGI_FORMAT_BC3_TYPELESS
+	DXGI_FORMAT_BC3_UNORM
+	DXGI_FORMAT_BC3_UNORM_SRGB
+	DXGI_FORMAT_BC4_TYPELESS
+	DXGI_FORMAT_BC4_UNORM
+	DXGI_FORMAT_BC4_SNORM
+	DXGI_FORMAT_BC5_TYPELESS
+	DXGI_FORMAT_BC5_UNORM
+	DXGI_FORMAT_BC5_SNORM
+	DXGI_FORMAT_B5G6R5_UNORM
+	DXGI_FORMAT_B5G5R5A1_UNORM
+	DXGI_FORMAT_B8G8R8A8_UNORM
+	DXGI_FORMAT_B8G8R8X8_UNORM
+	DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM
+	DXGI_FORMAT_B8G8R8A8_TYPELESS
+	DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
+	DXGI_FORMAT_B8G8R8X8_TYPELESS
+	DXGI_FORMAT_B8G8R8X8_UNORM_SRGB
+	DXGI_FORMAT_BC6H_TYPELESS
+	DXGI_FORMAT_BC6H_UF16
+	DXGI_FORMAT_BC6H_SF16
+	DXGI_FORMAT_BC7_TYPELESS
+	DXGI_FORMAT_BC7_UNORM
+	DXGI_FORMAT_BC7_UNORM_SRGB
+	DXGI_FORMAT_AYUV
+	DXGI_FORMAT_Y410
+	DXGI_FORMAT_Y416
+	DXGI_FORMAT_NV12
+	DXGI_FORMAT_P010
+	DXGI_FORMAT_P016
+	DXGI_FORMAT_420_OPAQUE
+	DXGI_FORMAT_YUY2
+	DXGI_FORMAT_Y210
+	DXGI_FORMAT_Y216
+	DXGI_FORMAT_NV11
+	DXGI_FORMAT_AI44
+	DXGI_FORMAT_IA44
+	DXGI_FORMAT_P8
+	DXGI_FORMAT_A8P8
+	DXGI_FORMAT_B4G4R4A4_UNORM
+)
+
+type D3D10_RESOURCE_DIMENSION int
+
+const (
+	D3D10_RESOURCE_DIMENSION_UNKNOWN D3D10_RESOURCE_DIMENSION = iota
+	D3D10_RESOURCE_DIMENSION_BUFFER
+	D3D10_RESOURCE_DIMENSION_TEXTURE1D
+	D3D10_RESOURCE_DIMENSION_TEXTURE2D
+	D3D10_RESOURCE_DIMENSION_TEXTURE3D
+)
+
+// Header used at the start of a DDS file. Should be prefixed by a 'DDS '
+// four-character code.
+type DDS_HEADER struct {
+	Size              uint32
+	Flags             uint32
+	Height            uint32
+	Width             uint32
+	PitchOrLinearSize uint32
+	Depth             uint32
+	MipMapCount       uint32
+	Reserved1         [11]uint32
+	Ddspf             DDS_PIXELFORMAT
+	Caps              uint32
+	Caps2             uint32
+	Caps3             uint32
+	Caps4             uint32
+	Reserved2         uint32
+}
+
+func (d DDS_HEADER) String() string {
+	// flags
+	var f []string
+	if d.Flags&DDSD_CAPS != 0 {
+		f = append(f, "DDSD_CAPS")
+	}
+	if d.Flags&DDSD_HEIGHT != 0 {
+		f = append(f, "DDSD_HEIGHT")
+	}
+	if d.Flags&DDSD_WIDTH != 0 {
+		f = append(f, "DDSD_WIDTH")
+	}
+	if d.Flags&DDSD_PITCH != 0 {
+		f = append(f, "DDSD_PITCH")
+	}
+	if d.Flags&DDSD_PIXELFORMAT != 0 {
+		f = append(f, "DDSD_PIXELFORMAT")
+	}
+	if d.Flags&DDSD_MIPMAPCOUNT != 0 {
+		f = append(f, "DDSD_MIPMAPCOUNT")
+	}
+	if d.Flags&DDSD_LINEARSIZE != 0 {
+		f = append(f, "DDSD_LINEARSIZE")
+	}
+	if d.Flags&DDSD_DEPTH != 0 {
+		f = append(f, "DDSD_DEPTH")
+	}
+	// caps
+	var c []string
+	if d.Caps&DDSCAPS_COMPLEX != 0 {
+		c = append(c, "DDSCAPS_COMPLEX")
+	}
+	if d.Caps&DDSCAPS_MIPMAP != 0 {
+		c = append(c, "DDSCAPS_MIPMAP")
+	}
+	if d.Caps&DDSCAPS_TEXTURE != 0 {
+		c = append(c, "DDSCAPS_TEXTURE")
+	}
+	// caps2
+	var c2 []string
+	if d.Caps2&DDSCAPS2_CUBEMAP != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_POSITIVEX != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_POSITIVEX")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_NEGATIVEX != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_NEGATIVEX")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_POSITIVEY != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_POSITIVEY")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_NEGATIVEY != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_NEGATIVEY")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_POSITIVEZ != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_POSITIVEZ")
+	}
+	if d.Caps2&DDSCAPS2_CUBEMAP_NEGATIVEZ != 0 {
+		c2 = append(c2, "DDSCAPS2_CUBEMAP_NEGATIVEZ")
+	}
+	if d.Caps2&DDSCAPS2_VOLUME != 0 {
+		c2 = append(c2, "DDSCAPS2_VOLUME")
+	}
+	// build string, return
+	return fmt.Sprintf("<flags=%08x(%s) height=%d width=%d pitch=%d depth=%d mipmaps=%d Ddspf=%v caps=%08x(%s) caps2=%08x(%s)>",
+		d.Flags, strings.Join(f, "|"), d.Height, d.Width,
+		d.PitchOrLinearSize, d.Depth, d.MipMapCount,
+		d.Ddspf,
+		d.Caps, strings.Join(c, "|"),
+		d.Caps2, strings.Join(c2, "|"))
+}
+
+// DDS pixel format. Note that the meaning of the masks is overloaded
+// for luminance and YUV texture formats, and ignored for compressed
+// texture formats.
+type DDS_PIXELFORMAT struct {
+	Size                                   uint32
+	Flags                                  uint32
+	FourCC                                 uint32
+	RGBBitCount                            uint32
+	RBitMask, GBitMask, BBitMask, ABitMask uint32
+}
+
+func (d DDS_PIXELFORMAT) String() string {
+	var s []string
+	if d.Flags&DDPF_ALPHAPIXELS != 0 {
+		s = append(s, "DDPF_ALPHAPIXELS")
+	}
+	if d.Flags&DDPF_ALPHA != 0 {
+		s = append(s, "DDPF_ALPHA")
+	}
+	if d.Flags&DDPF_FOURCC != 0 {
+		s = append(s, "DDPF_FOURCC")
+	}
+	if d.Flags&DDPF_RGB != 0 {
+		s = append(s, "DDPF_RGB")
+	}
+	if d.Flags&DDPF_YUV != 0 {
+		s = append(s, "DDPF_YUV")
+	}
+	if d.Flags&DDPF_LUMINANCE != 0 {
+		s = append(s, "DDPF_LUMINANCE")
+	}
+	return fmt.Sprintf("<flags=%08x(%s) fourcc=%08x rgbcount=%d rmask=%08x gmask=%08x bmask=%08x amask=%08x>",
+		d.Flags, strings.Join(s, "|"), d.FourCC, d.RGBBitCount,
+		d.RBitMask, d.GBitMask, d.BBitMask, d.ABitMask)
+}
+
+// DDS_HEADER_DXT10 is a header for resources that can't be expressed using
+// the old header format.
+type DDS_HEADER_DXT10 struct {
+	DxgiFormat        DXGI_FORMAT
+	ResourceDimension D3D10_RESOURCE_DIMENSION
+	MiscFlag          uint32
+	ArraySize         uint32
+	Reserved          uint32
+}
