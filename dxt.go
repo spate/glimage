@@ -4,9 +4,11 @@
 
 package glimage
 
+import "github.com/spate/glimage/color"
+
 func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
-	color0 := RGB565{uint16(pix[0] | pix[1]<<8)}
-	color1 := RGB565{uint16(pix[2] | pix[3]<<8)}
+	color0 := color.RGB565{uint16(pix[0] | pix[1]<<8)}
+	color1 := color.RGB565{uint16(pix[2] | pix[3]<<8)}
 	bits := uint32(pix[4]) | uint32(pix[5])<<8 | uint32(pix[6])<<16 | uint32(pix[7])<<24
 
 	code := bits >> (2 * (uint8(y)*4 + uint8(x))) & 0x3

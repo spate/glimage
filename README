@@ -6,10 +6,8 @@ image.Image interface.
 
 Currently, this package provides:
 
- - DXT1,DXT3,DXT5 image support (*)
- - Simple DDS file loader for DXT files (*)
-
-(*) indicates untested
+ - DXT1,DXT3,DXT5,BGRA image support
+ - Simple DDS file loader for DXT,BGRA files
 
 
 This package is provided under a Clear BSD License.

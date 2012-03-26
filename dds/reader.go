@@ -113,6 +113,29 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 		default:
 			return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
 		}
+	case d.h.Ddspf.Flags&DDPF_RGB != 0:
+		if d.h.Ddspf.Flags&DDPF_ALPHAPIXELS != 0 {
+			switch {
+			case d.h.Ddspf.RBitMask == 0x00FF0000 && d.h.Ddspf.GBitMask == 0x0000FF00 &&
+				d.h.Ddspf.BBitMask == 0x000000FF && d.h.Ddspf.ABitMask == 0xFF000000:
+				d.img = make([]image.Image, d.h.MipMapCount)
+				w, h := int(d.h.Width), int(d.h.Height)
+				for i := 0; i < int(d.h.MipMapCount); i++ {
+					img := glimage.NewBGRA(image.Rect(0, 0, w, h))
+					_, err = io.ReadFull(d.r, img.Pix)
+					if err != nil {
+						return err
+					}
+					d.img[i] = image.Image(img)
+					w >>= 1
+					h >>= 1
+				}
+			default:
+				return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
+			}
+		} else {
+			return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
+		}
 	default:
 		return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
 	}
