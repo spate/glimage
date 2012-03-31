@@ -7,8 +7,8 @@ package glimage
 import "github.com/spate/glimage/color"
 
 func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
-	color0 := color.RGB565{uint16(pix[0] | pix[1]<<8)}
-	color1 := color.RGB565{uint16(pix[2] | pix[3]<<8)}
+	color0 := color.RGB565{uint16(pix[0]) | uint16(pix[1])<<8}
+	color1 := color.RGB565{uint16(pix[2]) | uint16(pix[3])<<8}
 	bits := uint32(pix[4]) | uint32(pix[5])<<8 | uint32(pix[6])<<16 | uint32(pix[7])<<24
 
 	code := bits >> (2 * (uint8(y)*4 + uint8(x))) & 0x3
@@ -33,7 +33,7 @@ func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
 			r1, g1, b1, _ := color1.RGBA()
 			return (r0 + 2*r1) / 3, (g0 + 2*g1) / 3, (b0 + 2*b1) / 3, 0xFFFF
 		} else {
-			return 0, 0, 0, 0xFFFF
+			return 0, 0, 0, 0
 		}
 	}
 	// should never get here
