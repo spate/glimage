@@ -275,8 +275,8 @@ func (d DDS_HEADER) String() string {
 		c2 = append(c2, "DDSCAPS2_VOLUME")
 	}
 	// build string, return
-	return fmt.Sprintf("<flags=%08x(%s) height=%d width=%d pitch=%d depth=%d mipmaps=%d Ddspf=%v caps=%08x(%s) caps2=%08x(%s)>",
-		d.Flags, strings.Join(f, "|"), d.Height, d.Width,
+	return fmt.Sprintf("<size=%d flags=%08x(%s) height=%d width=%d pitch=%d depth=%d mipmaps=%d Ddspf=%v caps=%08x(%s) caps2=%08x(%s)>",
+		d.Size, d.Flags, strings.Join(f, "|"), d.Height, d.Width,
 		d.PitchOrLinearSize, d.Depth, d.MipMapCount,
 		d.Ddspf,
 		d.Caps, strings.Join(c, "|"),
@@ -314,8 +314,8 @@ func (d DDS_PIXELFORMAT) String() string {
 	if d.Flags&DDPF_LUMINANCE != 0 {
 		s = append(s, "DDPF_LUMINANCE")
 	}
-	return fmt.Sprintf("<flags=%08x(%s) fourcc=%08x rgbcount=%d rmask=%08x gmask=%08x bmask=%08x amask=%08x>",
-		d.Flags, strings.Join(s, "|"), d.FourCC, d.RGBBitCount,
+	return fmt.Sprintf("<size=%d flags=%08x(%s) fourcc=%08x rgbcount=%d rmask=%08x gmask=%08x bmask=%08x amask=%08x>",
+		d.Size, d.Flags, strings.Join(s, "|"), d.FourCC, d.RGBBitCount,
 		d.RBitMask, d.GBitMask, d.BBitMask, d.ABitMask)
 }
 
