@@ -42,12 +42,6 @@ func (p *Dxt3) At(x, y int) color.Color {
 	return color.RGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), 0xFF}
 }
 
-// Opaque returns whether entire image is opaque.
-func (p *Dxt3) Opaque() bool {
-	// FIXME
-	return true
-}
-
 func (p *Dxt3) BlockOffset(x, y int) int {
 	return p.Stride*(y/4) + (x / 4)
 }
