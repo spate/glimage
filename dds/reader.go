@@ -1,5 +1,6 @@
-// Copyright (c) 2012, James Helferty
-// All rights reserved.
+// Copyright (c) 2012, James Helferty. All rights reserved.
+// Use of this source code is governed by a Clear BSD License
+// that can be found in the LICENSE file.
 
 // Package dds implements a DDS image decoder.
 package dds
@@ -114,8 +115,11 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 			return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
 		}
 	case d.h.Ddspf.Flags&DDPF_RGB != 0:
+		// Color formats
 		if d.h.Ddspf.Flags&DDPF_ALPHAPIXELS != 0 {
+			// Color formats with alpha
 			switch {
+			// A8R8G8B8
 			case d.h.Ddspf.RBitMask == 0x00FF0000 && d.h.Ddspf.GBitMask == 0x0000FF00 &&
 				d.h.Ddspf.BBitMask == 0x000000FF && d.h.Ddspf.ABitMask == 0xFF000000:
 				d.img = make([]image.Image, d.h.MipMapCount)
@@ -130,11 +134,60 @@ func (d *decoder) decode(r io.Reader, full bool) error {
 					w >>= 1
 					h >>= 1
 				}
+			// A4R4G4B4
+			case d.h.Ddspf.RBitMask == 0x0F00 && d.h.Ddspf.GBitMask == 0x00F0 &&
+				d.h.Ddspf.BBitMask == 0x000F && d.h.Ddspf.ABitMask == 0xF000:
+				d.img = make([]image.Image, d.h.MipMapCount)
+				w, h := int(d.h.Width), int(d.h.Height)
+				for i := 0; i < int(d.h.MipMapCount); i++ {
+					img := glimage.NewBGRA4444(image.Rect(0, 0, w, h))
+					err = binary.Read(d.r, binary.LittleEndian, &img.Pix)
+					if err != nil {
+						return err
+					}
+					d.img[i] = image.Image(img)
+					w >>= 1
+					h >>= 1
+				}
+			// A1R5G5B5
+			case d.h.Ddspf.RBitMask == 0x7C00 && d.h.Ddspf.GBitMask == 0x03E0 &&
+				d.h.Ddspf.BBitMask == 0x001F && d.h.Ddspf.ABitMask == 0x8000:
+				d.img = make([]image.Image, d.h.MipMapCount)
+				w, h := int(d.h.Width), int(d.h.Height)
+				for i := 0; i < int(d.h.MipMapCount); i++ {
+					img := glimage.NewBGRA5551(image.Rect(0, 0, w, h))
+					err = binary.Read(d.r, binary.LittleEndian, &img.Pix)
+					if err != nil {
+						return err
+					}
+					d.img[i] = image.Image(img)
+					w >>= 1
+					h >>= 1
+				}
 			default:
 				return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
 			}
 		} else {
-			return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
+			// Color formats without alpha
+			switch {
+			// R5G6B5
+			case d.h.Ddspf.RBitMask == 0xF800 && d.h.Ddspf.GBitMask == 0x07E0 &&
+				d.h.Ddspf.BBitMask == 0x001F && d.h.Ddspf.ABitMask == 0x0000:
+				d.img = make([]image.Image, d.h.MipMapCount)
+				w, h := int(d.h.Width), int(d.h.Height)
+				for i := 0; i < int(d.h.MipMapCount); i++ {
+					img := glimage.NewBGR565(image.Rect(0, 0, w, h))
+					err = binary.Read(d.r, binary.LittleEndian, &img.Pix)
+					if err != nil {
+						return err
+					}
+					d.img[i] = image.Image(img)
+					w >>= 1
+					h >>= 1
+				}
+			default:
+				return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)
+			}
 		}
 	default:
 		return fmt.Errorf("dds: unrecognized format %v", d.h.Ddspf)

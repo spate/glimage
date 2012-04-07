@@ -7,8 +7,8 @@ package glimage
 import "github.com/spate/glimage/color"
 
 func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
-	color0 := color.RGB565{uint16(pix[0]) | uint16(pix[1])<<8}
-	color1 := color.RGB565{uint16(pix[2]) | uint16(pix[3])<<8}
+	color0 := color.BGR565{uint16(pix[0]) | uint16(pix[1])<<8}
+	color1 := color.BGR565{uint16(pix[2]) | uint16(pix[3])<<8}
 	bits := uint32(pix[4]) | uint32(pix[5])<<8 | uint32(pix[6])<<16 | uint32(pix[7])<<24
 
 	code := bits >> (2 * (uint8(y)*4 + uint8(x))) & 0x3
@@ -18,7 +18,7 @@ func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
 	case 1:
 		return color1.RGBA()
 	case 2:
-		if color0.RGB > color1.RGB {
+		if color0.BGR > color1.BGR {
 			r0, g0, b0, _ := color0.RGBA()
 			r1, g1, b1, _ := color1.RGBA()
 			return (2*r0 + r1) / 3, (2*g0 + g1) / 3, (2*b0 + b1) / 3, 0xFFFF
@@ -28,7 +28,7 @@ func ConvertDxt1BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
 			return (r0 + r1) / 2, (g0 + g1) / 2, (b0 + b1) / 2, 0xFFFF
 		}
 	case 3:
-		if color0.RGB > color1.RGB {
+		if color0.BGR > color1.BGR {
 			r0, g0, b0, _ := color0.RGBA()
 			r1, g1, b1, _ := color1.RGBA()
 			return (r0 + 2*r1) / 3, (g0 + 2*g1) / 3, (b0 + 2*b1) / 3, 0xFFFF
