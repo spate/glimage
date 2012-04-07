@@ -35,11 +35,6 @@ func (p *BGRA) ColorModel() color.Model {
 	return glcolor.BGRAModel
 }
 
-func (p *BGRA) Opaque() bool {
-	// FIXME
-	return false
-}
-
 func (p *BGRA) PixOffset(x, y int) int {
 	return (y-p.Rect.Min.Y)*p.Stride + (x-p.Rect.Min.X)*4
 }
