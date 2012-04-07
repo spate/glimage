@@ -49,7 +49,12 @@ func testDDS(t *testing.T, format string, test_transparent bool) {
 	}
 }
 
-func TestA8R8G8B8(t *testing.T) { testDDS(t, "A8R8G8B8", true) }
-func TestDXT1(t *testing.T)     { testDDS(t, "DXT1", false) }
-func TestDXT3(t *testing.T)     { testDDS(t, "DXT3", false) }
-func TestDXT5(t *testing.T)     { testDDS(t, "DXT5", false) }
+func TestDDSFiles(t *testing.T) {
+	testDDS(t, "A8R8G8B8", true)
+	testDDS(t, "A4R4G4B4", true)
+	testDDS(t, "A1R5G5B5", true)
+	testDDS(t, "R5G6B5", false)
+	testDDS(t, "DXT1", false)
+	testDDS(t, "DXT3", false)
+	testDDS(t, "DXT5", false)
+}
