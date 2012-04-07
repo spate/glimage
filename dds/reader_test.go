@@ -28,9 +28,11 @@ func testDDS(t *testing.T, format string, test_transparent bool) {
 
 	img, _, err := image.Decode(f)
 	if err != nil {
-		t.Errorf("dds file failed")
+		t.Errorf(err.Error())
 		return
 	}
+
+	//fmt.Printf("%v: %v\n\n", format, img)
 
 	// opaque
 	testColor(t, format, color.RGBA{0xff, 0x00, 0x00, 0xff}, img, 0, 0)
