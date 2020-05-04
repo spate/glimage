@@ -26,7 +26,7 @@ func NewDxt3(r image.Rectangle) *Dxt3 {
 }
 
 func (p *Dxt3) ColorModel() color.Model {
-	return color.RGBAModel
+	return color.NRGBAModel
 }
 
 func (p *Dxt3) Bounds() image.Rectangle {
@@ -35,11 +35,11 @@ func (p *Dxt3) Bounds() image.Rectangle {
 
 func (p *Dxt3) At(x, y int) color.Color {
 	if !(image.Point{x, y}.In(p.Rect)) {
-		return color.RGBA{}
+		return color.NRGBA{}
 	}
 	i := p.BlockOffset(x, y)
-	r, g, b, _ := ConvertDxt3BlockAt(p.Pix[i:i+16], x%4, y%4)
-	return color.RGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), 0xFF}
+	r, g, b, a := ConvertDxt3BlockAt(p.Pix[i:i+16], x%4, y%4)
+	return color.NRGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), uint8(a >> 8)}
 }
 
 func (p *Dxt3) BlockOffset(x, y int) int {

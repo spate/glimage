@@ -64,7 +64,7 @@ func ConvertDxt5BlockAt(pix []uint8, x, y int) (r, g, b, a uint32) {
 	bits := uint64(pix[2]) | uint64(pix[3])<<8 | uint64(pix[4])<<16
 	bits |= uint64(pix[5])<<24 | uint64(pix[6])<<32 | uint64(pix[7])<<40
 
-	code := bits >> (3 * ((uint8(y) * 4) + uint8(x)))
+	code := (bits >> ((y*4 + x) * 3)) & 7
 	switch code {
 	case 0:
 		a = alpha0
