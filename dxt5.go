@@ -22,7 +22,7 @@ type Dxt5 struct {
 func NewDxt5(r image.Rectangle) *Dxt5 {
 	w, h := r.Dx(), r.Dy()
 	pix := make([]uint8, ((w+3)/4)*((h+3)/4)*16)
-	return &Dxt5{pix, (w+3)/4*16, r}
+	return &Dxt5{pix, (w + 3) / 4 * 16, r}
 }
 
 func (p *Dxt5) ColorModel() color.Model {
@@ -43,5 +43,5 @@ func (p *Dxt5) At(x, y int) color.Color {
 }
 
 func (p *Dxt5) BlockOffset(x, y int) int {
-	return p.Stride*(y/4) + (x / 4)
+	return p.Stride*(y/4) + ((x / 4) * 16)
 }
